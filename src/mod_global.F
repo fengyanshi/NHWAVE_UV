@@ -275,7 +275,9 @@
      CHARACTER(LEN=80) :: Sali_HotStart_File,Temp_HotStart_File
 # endif
 
-
+# if defined (FROUDE_CAP)
+     REAL(SP) :: FROUDECAP
+# endif
 
 
 

@@ -304,6 +304,17 @@ SUBROUTINE READ_INPUT
       ENDIF
      ENDIF ! end hotstart
 
+# if defined (FROUDE_CAP)
+     CALL GET_Float_VAL(FROUDECAP,FILE_NAME,'FROUDE_CAP',line)
+# if defined (PARALLEL)
+     if(myid.eq.0) WRITE(3,'(A13,F8.3)')'FROUDE_CAP= ',FROUDECAP
+# else
+     WRITE(3,'(A13,F8.3)')'FROUDE_CAP= ',FROUDECAP
+# endif
+
+# endif
+! end froude cap
+
 ! fyshi added bathymetry file name 04/13/2012
 
      CALL GET_STRING_VAL(Depth_File,FILE_NAME,'DEPTH_FILE',line,ierr)

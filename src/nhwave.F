@@ -1219,6 +1219,10 @@
      integer :: i,j,k,n,Ista,Nlen
      integer :: ng   ! fyshi
 
+# if defined(FROUDE_CAP)
+     REAL(SP) :: FroudeU,DUU,Dangle
+# endif
+
      Nlen = Kend-Kbeg+1
 
 # if defined (VEGETATION)
@@ -1743,6 +1747,27 @@
      enddo
      enddo
      enddo
+
+# if defined(FROUDE_CAP)
+     DO K=Kbeg,Kend
+     DO J=Jbeg,Jend
+     DO I=Ibeg,Iend
+       IF(Mask(I,J)>0)THEN
+         FroudeU=SQRT(grav*D(I,J))*FROUDECAP*D(I,J)
+         DUU=SQRT(DU(I,J,K)**2+DV(I,J,K)**2)
+         IF(DUU>FroudeU)THEN
+          Dangle=atan2(DV(I,J,K),DU(I,J,K))
+          DU(I,J,K)=FroudeU*COS(Dangle)
+          DV(I,J,K)=FroudeU*SIN(Dangle)
+         ENDIF
+         IF(ABS(DW(I,J,K))>FroudeU)THEN
+          DW(I,J,K)=SIGN(FroudeU,DW(I,J,K))
+         ENDIF
+       ENDIF
+     ENDDO
+     ENDDO
+     ENDDO
+# endif
 
      ! boundary conditions and final velocity
      call get_UVW(ng)  ! fyshi
